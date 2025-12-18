@@ -6,6 +6,25 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B93EB2A92EF2FA6900D64C24 /* libsolidity.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2A82EF2FA6900D64C24 /* libsolidity.a */; };
+		B93EB2AB2EF2FADE00D64C24 /* libevmasm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2AA2EF2FADE00D64C24 /* libevmasm.a */; };
+		B93EB2AD2EF317D800D64C24 /* liblangutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2AC2EF317D800D64C24 /* liblangutil.a */; };
+		B93EB2AF2EF317E900D64C24 /* libsmtutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2AE2EF317E900D64C24 /* libsmtutil.a */; };
+		B93EB2B32EF3183100D64C24 /* libsolutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2B22EF3183100D64C24 /* libsolutil.a */; };
+		B93EB2B52EF3184400D64C24 /* libyul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2B42EF3184400D64C24 /* libyul.a */; };
+		B93EB2B72EF3189D00D64C24 /* libsolc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2B02EF317F800D64C24 /* libsolc.a */; };
+		B93EB2B92EF3196D00D64C24 /* libboost_filesystem.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2B82EF3196D00D64C24 /* libboost_filesystem.dylib */; };
+		B93EB2C92EF4351400D64C24 /* libevmasm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2AA2EF2FADE00D64C24 /* libevmasm.a */; };
+		B93EB2CA2EF4352D00D64C24 /* liblangutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2AC2EF317D800D64C24 /* liblangutil.a */; };
+		B93EB2CB2EF4354000D64C24 /* libsmtutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2AE2EF317E900D64C24 /* libsmtutil.a */; };
+		B93EB2CC2EF4355100D64C24 /* libsolc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2B02EF317F800D64C24 /* libsolc.a */; };
+		B93EB2CD2EF4356700D64C24 /* libsolidity.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2A82EF2FA6900D64C24 /* libsolidity.a */; };
+		B93EB2CE2EF4357700D64C24 /* libsolutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2B22EF3183100D64C24 /* libsolutil.a */; };
+		B93EB2CF2EF4359300D64C24 /* libyul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2B42EF3184400D64C24 /* libyul.a */; };
+		B93EB2D02EF435BA00D64C24 /* libboost_filesystem.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2B82EF3196D00D64C24 /* libboost_filesystem.dylib */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		B93EB29B2EF2EE2100D64C24 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -20,12 +39,26 @@
 
 /* Begin PBXFileReference section */
 		B93EB29D2EF2EE2100D64C24 /* WALA CAst Solidity */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "WALA CAst Solidity"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B93EB2A82EF2FA6900D64C24 /* libsolidity.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsolidity.a; path = ../solidity/build/libsolidity/libsolidity.a; sourceTree = "<group>"; };
+		B93EB2AA2EF2FADE00D64C24 /* libevmasm.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libevmasm.a; path = ../solidity/build/libevmasm/libevmasm.a; sourceTree = "<group>"; };
+		B93EB2AC2EF317D800D64C24 /* liblangutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblangutil.a; path = ../solidity/build/liblangutil/liblangutil.a; sourceTree = "<group>"; };
+		B93EB2AE2EF317E900D64C24 /* libsmtutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsmtutil.a; path = ../solidity/build/libsmtutil/libsmtutil.a; sourceTree = "<group>"; };
+		B93EB2B02EF317F800D64C24 /* libsolc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsolc.a; path = ../solidity/build/libsolc/libsolc.a; sourceTree = "<group>"; };
+		B93EB2B22EF3183100D64C24 /* libsolutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsolutil.a; path = ../solidity/build/libsolutil/libsolutil.a; sourceTree = "<group>"; };
+		B93EB2B42EF3184400D64C24 /* libyul.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libyul.a; path = ../solidity/build/libyul/libyul.a; sourceTree = "<group>"; };
+		B93EB2B82EF3196D00D64C24 /* libboost_filesystem.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_filesystem.dylib; path = ../../../../opt/homebrew/Cellar/boost/1.90.0/lib/libboost_filesystem.dylib; sourceTree = "<group>"; };
+		B93EB2BE2EF4326400D64C24 /* libWALA CAst Solidity JNI Bridge.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libWALA CAst Solidity JNI Bridge.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B93EB29F2EF2EE2100D64C24 /* WALA CAst Solidity */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "WALA CAst Solidity";
+			sourceTree = "<group>";
+		};
+		B93EB2BF2EF4326400D64C24 /* WALA CAst Solidity JNI Bridge */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "WALA CAst Solidity JNI Bridge";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -35,6 +68,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B93EB2B92EF3196D00D64C24 /* libboost_filesystem.dylib in Frameworks */,
+				B93EB2B72EF3189D00D64C24 /* libsolc.a in Frameworks */,
+				B93EB2B52EF3184400D64C24 /* libyul.a in Frameworks */,
+				B93EB2B32EF3183100D64C24 /* libsolutil.a in Frameworks */,
+				B93EB2AF2EF317E900D64C24 /* libsmtutil.a in Frameworks */,
+				B93EB2AD2EF317D800D64C24 /* liblangutil.a in Frameworks */,
+				B93EB2AB2EF2FADE00D64C24 /* libevmasm.a in Frameworks */,
+				B93EB2A92EF2FA6900D64C24 /* libsolidity.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B93EB2BC2EF4326400D64C24 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B93EB2D02EF435BA00D64C24 /* libboost_filesystem.dylib in Frameworks */,
+				B93EB2CF2EF4359300D64C24 /* libyul.a in Frameworks */,
+				B93EB2CE2EF4357700D64C24 /* libsolutil.a in Frameworks */,
+				B93EB2CD2EF4356700D64C24 /* libsolidity.a in Frameworks */,
+				B93EB2CC2EF4355100D64C24 /* libsolc.a in Frameworks */,
+				B93EB2CB2EF4354000D64C24 /* libsmtutil.a in Frameworks */,
+				B93EB2CA2EF4352D00D64C24 /* liblangutil.a in Frameworks */,
+				B93EB2C92EF4351400D64C24 /* libevmasm.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,6 +101,8 @@
 			isa = PBXGroup;
 			children = (
 				B93EB29F2EF2EE2100D64C24 /* WALA CAst Solidity */,
+				B93EB2BF2EF4326400D64C24 /* WALA CAst Solidity JNI Bridge */,
+				B93EB2A72EF2FA6900D64C24 /* Frameworks */,
 				B93EB29E2EF2EE2100D64C24 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -53,11 +111,37 @@
 			isa = PBXGroup;
 			children = (
 				B93EB29D2EF2EE2100D64C24 /* WALA CAst Solidity */,
+				B93EB2BE2EF4326400D64C24 /* libWALA CAst Solidity JNI Bridge.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
+		B93EB2A72EF2FA6900D64C24 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B93EB2B82EF3196D00D64C24 /* libboost_filesystem.dylib */,
+				B93EB2B42EF3184400D64C24 /* libyul.a */,
+				B93EB2B22EF3183100D64C24 /* libsolutil.a */,
+				B93EB2B02EF317F800D64C24 /* libsolc.a */,
+				B93EB2AE2EF317E900D64C24 /* libsmtutil.a */,
+				B93EB2AC2EF317D800D64C24 /* liblangutil.a */,
+				B93EB2AA2EF2FADE00D64C24 /* libevmasm.a */,
+				B93EB2A82EF2FA6900D64C24 /* libsolidity.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		B93EB2BA2EF4326400D64C24 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		B93EB29C2EF2EE2100D64C24 /* WALA CAst Solidity */ = {
@@ -82,6 +166,28 @@
 			productReference = B93EB29D2EF2EE2100D64C24 /* WALA CAst Solidity */;
 			productType = "com.apple.product-type.tool";
 		};
+		B93EB2BD2EF4326400D64C24 /* WALA CAst Solidity JNI Bridge */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B93EB2C62EF4326400D64C24 /* Build configuration list for PBXNativeTarget "WALA CAst Solidity JNI Bridge" */;
+			buildPhases = (
+				B93EB2BA2EF4326400D64C24 /* Headers */,
+				B93EB2BB2EF4326400D64C24 /* Sources */,
+				B93EB2BC2EF4326400D64C24 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B93EB2BF2EF4326400D64C24 /* WALA CAst Solidity JNI Bridge */,
+			);
+			name = "WALA CAst Solidity JNI Bridge";
+			packageProductDependencies = (
+			);
+			productName = "WALA CAst Solidity JNI Bridge";
+			productReference = B93EB2BE2EF4326400D64C24 /* libWALA CAst Solidity JNI Bridge.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -92,6 +198,9 @@
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					B93EB29C2EF2EE2100D64C24 = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					B93EB2BD2EF4326400D64C24 = {
 						CreatedOnToolsVersion = 26.2;
 					};
 				};
@@ -111,12 +220,20 @@
 			projectRoot = "";
 			targets = (
 				B93EB29C2EF2EE2100D64C24 /* WALA CAst Solidity */,
+				B93EB2BD2EF4326400D64C24 /* WALA CAst Solidity JNI Bridge */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B93EB2992EF2EE2100D64C24 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B93EB2BB2EF4326400D64C24 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -245,6 +362,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					/Users/julian/git/solidity,
+					/opt/homebrew/include,
+					"/Users/julian/git/solidity/deps/range-v3/include",
+					"/Users/julian/git/solidity/deps/nlohmann-json/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/Users/julian/git/solidity/build/libyul,
+					/Users/julian/git/solidity/build/libevmasm,
+					/Users/julian/git/solidity/build/libsolidity,
+					/Users/julian/git/solidity/build/libsolc,
+					/Users/julian/git/solidity/build/liblangutil,
+					/Users/julian/git/solidity/build/libsolutil,
+					/Users/julian/git/solidity/build/libsmtutil,
+					/opt/homebrew/Cellar/boost/1.90.0/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -253,7 +386,80 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				LIBRARY_SEARCH_PATHS = (
+					/Users/julian/git/solidity/build/libyul,
+					/Users/julian/git/solidity/build/libevmasm,
+					/Users/julian/git/solidity/build/libsolidity,
+					/Users/julian/git/solidity/build/libsolc,
+					/Users/julian/git/solidity/build/liblangutil,
+					/Users/julian/git/solidity/build/libsolutil,
+					/Users/julian/git/solidity/build/libsmtutil,
+					/opt/homebrew/Cellar/boost/1.90.0/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		B93EB2C72EF4326400D64C24 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"/Library/Java/JavaVirtualMachines/microsoft-21.jdk/Contents/Home/include",
+					/Users/julian/git/solidity,
+					/opt/homebrew/include,
+					"/Users/julian/git/solidity/deps/range-v3/include",
+					"/Users/julian/git/solidity/deps/nlohmann-json/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/Users/julian/git/solidity/build/libevmasm,
+					/Users/julian/git/solidity/build/liblsolc,
+					/Users/julian/git/solidity/build/libyul,
+					/Users/julian/git/solidity/build/libsolidity,
+					/Users/julian/git/solidity/build/liblangutil,
+					/Users/julian/git/solidity/build/libsmtutil,
+					/Users/julian/git/solidity/build/libsolutil,
+					/opt/homebrew/Cellar/boost/1.90.0/lib,
+				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = (
+					LIBRARY_SEARCH_PATHS,
+					"=",
+					/Users/julian/git/solidity/build/libyul,
+					/Users/julian/git/solidity/build/libevmasm,
+					/Users/julian/git/solidity/build/libsolidity,
+					/Users/julian/git/solidity/build/libsolc,
+					/Users/julian/git/solidity/build/liblangutil,
+					/Users/julian/git/solidity/build/libsolutil,
+					/Users/julian/git/solidity/build/libsmtutil,
+					"/opt/homebrew/Cellar/boost/1.90.0/lib\n",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		B93EB2C82EF4326400D64C24 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				LIBRARY_SEARCH_PATHS = (
+					/Users/julian/git/solidity/build/libevmasm,
+					/opt/homebrew/Cellar/boost/1.90.0/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -274,6 +480,15 @@
 			buildConfigurations = (
 				B93EB2A52EF2EE2100D64C24 /* Debug */,
 				B93EB2A62EF2EE2100D64C24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B93EB2C62EF4326400D64C24 /* Build configuration list for PBXNativeTarget "WALA CAst Solidity JNI Bridge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B93EB2C72EF4326400D64C24 /* Debug */,
+				B93EB2C82EF4326400D64C24 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
