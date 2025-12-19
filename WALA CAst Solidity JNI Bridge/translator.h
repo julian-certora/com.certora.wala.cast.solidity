@@ -14,10 +14,11 @@ using namespace solidity::frontend;
 
 class Translator : public ASTConstVisitor {
 private:
+    JNIEnv *jniEnv;
     CAstWrapper cast;
     
 public:
-    Translator(JNIEnv *env, Exceptions& ex, jobject ast) : cast(env, ex, ast) { }
+    Translator(JNIEnv *env, Exceptions& ex, jobject ast) : cast(env, ex, ast), jniEnv(env) { }
     
     virtual bool visitNode(ASTNode const&) override;
 

@@ -23,6 +23,9 @@ bool Translator::visit(const SourceUnit &_node) {
 }
 
 bool Translator::visit(const ContractDefinition &_node) {
-    std::cout << "contract " <<_node.name() << std::endl;
-    return true;
+    jobject n = cast.makeConstant( _node.name().c_str() );
+    jclass obj = jniEnv->FindClass("java/lang/Object");
+    jmethodID toString = jniEnv->GetMethodID(obj, "toString", "()Ljava/lang/String;");
+    std::cout << "contract " <<  jniEnv->GetStringUTFChars((jstring)jniEnv->CallObjectMethod(n, toString), 0) << std::endl;
+     return true;
 }
