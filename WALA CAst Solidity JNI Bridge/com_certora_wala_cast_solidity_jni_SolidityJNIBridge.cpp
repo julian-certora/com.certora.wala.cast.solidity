@@ -8,6 +8,9 @@
 #include "translator.h"
 #include "com_certora_wala_cast_solidity_jni_SolidityJNIBridge.h"
 
+#include "Exceptions.h"
+#include "CAstWrapper.h"
+
 std::map<int, solidity::frontend::CompilerStack *> compilers;
 
 void Java_com_certora_wala_cast_solidity_jni_SolidityJNIBridge_init(
@@ -72,10 +75,25 @@ jobject Java_com_certora_wala_cast_solidity_jni_SolidityJNIBridge_files(
 void Java_com_certora_wala_cast_solidity_jni_SolidityJNIBridge_translate
   (JNIEnv *env, jobject self, jstring fileName)
 {
+    TRY(exp, env)
+
     const char *fn = env->GetStringUTFChars(fileName, 0);
     int id = env->GetIntField(self, env->GetFieldID(env->GetObjectClass(self), "id", "I"));
-    Translator xlator;
+    
+    jclass astCls = env->FindClass("com/ibm/wala/cast/tree/impl/CAstImpl");
+    THROW_ANY_EXCEPTION(exp);
+ 
+    jmethodID astCtor = env->GetMethodID(astCls, "<init>", "()V");
+    THROW_ANY_EXCEPTION(exp);
+ 
+    jobject ast = env->NewObject(astCls, astCtor);
+    THROW_ANY_EXCEPTION(exp);
+ 
+    Translator xlator(env, exp, ast);
     compilers[id]->ast(std::string(fn)).accept(xlator);
+    
     env->ReleaseStringUTFChars(fileName, fn);
-}
+
+    CATCH()
+ }
 

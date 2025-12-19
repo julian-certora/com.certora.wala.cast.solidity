@@ -6,10 +6,19 @@
 //
 
 #include "solidityBridge.h"
+#include <jni.h>
+
+#include "CAstWrapper.h"
+
 using namespace solidity::frontend;
 
 class Translator : public ASTConstVisitor {
+private:
+    CAstWrapper cast;
+    
 public:
+    Translator(JNIEnv *env, Exceptions& ex, jobject ast) : cast(env, ex, ast) { }
+    
     virtual bool visitNode(ASTNode const&) override;
 
     virtual bool visit(const SourceUnit &_node) override;
