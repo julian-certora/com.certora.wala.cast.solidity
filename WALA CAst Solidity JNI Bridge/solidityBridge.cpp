@@ -18,7 +18,7 @@ solidity::StringMap gatherSources(int argc, char const**argv) {
         buffer << t.rdbuf();
         std::string file = buffer.str();
         
-        sources[a2] = file;
+        sources[a1] = file;
     }
     return sources;
 }

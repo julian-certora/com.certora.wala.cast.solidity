@@ -23,7 +23,18 @@
 		B93EB2CE2EF4357700D64C24 /* libsolutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2B22EF3183100D64C24 /* libsolutil.a */; };
 		B93EB2CF2EF4359300D64C24 /* libyul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2B42EF3184400D64C24 /* libyul.a */; };
 		B93EB2D02EF435BA00D64C24 /* libboost_filesystem.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2B82EF3196D00D64C24 /* libboost_filesystem.dylib */; };
+		B93EB2DD2EF4636000D64C24 /* libWALA CAst Solidity JNI Bridge.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B93EB2BE2EF4326400D64C24 /* libWALA CAst Solidity JNI Bridge.dylib */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B93EB2DE2EF4642500D64C24 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B93EB2952EF2EE2100D64C24 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B93EB2BD2EF4326400D64C24;
+			remoteInfo = "WALA CAst Solidity JNI Bridge";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		B93EB29B2EF2EE2100D64C24 /* CopyFiles */ = {
@@ -50,14 +61,27 @@
 		B93EB2BE2EF4326400D64C24 /* libWALA CAst Solidity JNI Bridge.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libWALA CAst Solidity JNI Bridge.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B93EB2DA2EF4625600D64C24 /* Exceptions for "WALA CAst Solidity JNI Bridge" folder in "WALA CAst Solidity JNI Bridge" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				solidityBridge.h,
+			);
+			target = B93EB2BD2EF4326400D64C24 /* WALA CAst Solidity JNI Bridge */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B93EB29F2EF2EE2100D64C24 /* WALA CAst Solidity */ = {
+		B93EB29F2EF2EE2100D64C24 /* WALA CAst Solidity runner */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "WALA CAst Solidity";
+			path = "WALA CAst Solidity runner";
 			sourceTree = "<group>";
 		};
 		B93EB2BF2EF4326400D64C24 /* WALA CAst Solidity JNI Bridge */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B93EB2DA2EF4625600D64C24 /* Exceptions for "WALA CAst Solidity JNI Bridge" folder in "WALA CAst Solidity JNI Bridge" target */,
+			);
 			path = "WALA CAst Solidity JNI Bridge";
 			sourceTree = "<group>";
 		};
@@ -68,6 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B93EB2DD2EF4636000D64C24 /* libWALA CAst Solidity JNI Bridge.dylib in Frameworks */,
 				B93EB2B92EF3196D00D64C24 /* libboost_filesystem.dylib in Frameworks */,
 				B93EB2B72EF3189D00D64C24 /* libsolc.a in Frameworks */,
 				B93EB2B52EF3184400D64C24 /* libyul.a in Frameworks */,
@@ -100,7 +125,7 @@
 		B93EB2942EF2EE2100D64C24 = {
 			isa = PBXGroup;
 			children = (
-				B93EB29F2EF2EE2100D64C24 /* WALA CAst Solidity */,
+				B93EB29F2EF2EE2100D64C24 /* WALA CAst Solidity runner */,
 				B93EB2BF2EF4326400D64C24 /* WALA CAst Solidity JNI Bridge */,
 				B93EB2A72EF2FA6900D64C24 /* Frameworks */,
 				B93EB29E2EF2EE2100D64C24 /* Products */,
@@ -155,9 +180,10 @@
 			buildRules = (
 			);
 			dependencies = (
+				B93EB2DF2EF4642500D64C24 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				B93EB29F2EF2EE2100D64C24 /* WALA CAst Solidity */,
+				B93EB29F2EF2EE2100D64C24 /* WALA CAst Solidity runner */,
 			);
 			name = "WALA CAst Solidity";
 			packageProductDependencies = (
@@ -241,6 +267,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B93EB2DF2EF4642500D64C24 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B93EB2BD2EF4326400D64C24 /* WALA CAst Solidity JNI Bridge */;
+			targetProxy = B93EB2DE2EF4642500D64C24 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		B93EB2A22EF2EE2100D64C24 /* Debug */ = {
@@ -361,12 +395,16 @@
 		B93EB2A52EF2EE2100D64C24 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"ADDITIONAL_SDKS[arch=*]" = "";
 				CODE_SIGN_STYLE = Automatic;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
+					/Users/julian/git/WALA/cast/cast/src/main/public,
 					/Users/julian/git/solidity,
 					/opt/homebrew/include,
 					"/Users/julian/git/solidity/deps/range-v3/include",
 					"/Users/julian/git/solidity/deps/nlohmann-json/include",
+					"/Library/Java/JavaVirtualMachines/microsoft-21.jdk/Contents/Home/include",
+					"/Library/Java/JavaVirtualMachines/microsoft-21.jdk/Contents/Home/include/darwin",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/Users/julian/git/solidity/build/libyul,
@@ -379,6 +417,7 @@
 					/opt/homebrew/Cellar/boost/1.90.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"SYSTEM_HEADER_SEARCH_PATHS[arch=*]" = "/Library/Java/JavaVirtualMachines/microsoft-21.jdk/Contents/Home/include/darwin";
 			};
 			name = Debug;
 		};
@@ -426,6 +465,12 @@
 					/Users/julian/git/solidity/build/libsmtutil,
 					/Users/julian/git/solidity/build/libsolutil,
 					/opt/homebrew/Cellar/boost/1.90.0/lib,
+					"$(PROJECT_DIR)/WALA\\ CAst\\ Solidity\\ JNI\\ Bridge",
+					"$(PROJECT_DIR)/WALA\\ CAst\\ Solidity\\ JNI\\ Bridge",
+					"$(PROJECT_DIR)/WALA\\ CAst\\ Solidity\\ JNI\\ Bridge",
+					"$(PROJECT_DIR)/WALA\\ CAst\\ Solidity\\ JNI\\ Bridge",
+					"$(PROJECT_DIR)/WALA\\ CAst\\ Solidity\\ JNI\\ Bridge",
+					"$(PROJECT_DIR)/WALA\\ CAst\\ Solidity\\ JNI\\ Bridge",
 				);
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
 					LIBRARY_SEARCH_PATHS,
@@ -457,6 +502,12 @@
 				LIBRARY_SEARCH_PATHS = (
 					/Users/julian/git/solidity/build/libevmasm,
 					/opt/homebrew/Cellar/boost/1.90.0/lib,
+					"$(PROJECT_DIR)/WALA\\ CAst\\ Solidity\\ JNI\\ Bridge",
+					"$(PROJECT_DIR)/WALA\\ CAst\\ Solidity\\ JNI\\ Bridge",
+					"$(PROJECT_DIR)/WALA\\ CAst\\ Solidity\\ JNI\\ Bridge",
+					"$(PROJECT_DIR)/WALA\\ CAst\\ Solidity\\ JNI\\ Bridge",
+					"$(PROJECT_DIR)/WALA\\ CAst\\ Solidity\\ JNI\\ Bridge",
+					"$(PROJECT_DIR)/WALA\\ CAst\\ Solidity\\ JNI\\ Bridge",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

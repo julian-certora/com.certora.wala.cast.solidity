@@ -17,11 +17,17 @@ BREW_INCLUDES=-I/opt/homebrew/include
 BOOST_LIB_DIRS=-L/opt/homebrew/lib
 BOOST_LIBS=-lboost_filesystem
 
+CAST=/Users/julian/git/WALA/cast
+CAST_INCLUDES=-I$(CAST)/cast/src/main/public
+
 com_certora_wala_cast_solidity_jni_SolidityJNIBridge.o:	com_certora_wala_cast_solidity_jni_SolidityJNIBridge.h com_certora_wala_cast_solidity_jni_SolidityJNIBridge.cpp $(JNI_HEADERS)
 	$(CC) -std=c++23 -fpic -c -o $@ -I$(JNI_INCLUDE) -I$(JNI_MD_INCLUDE) $(SOLIDITY_INCLUDES) $(BREW_INCLUDES) com_certora_wala_cast_solidity_jni_SolidityJNIBridge.cpp
 
 solidityBridge.o:	solidityBridge.h solidityBridge.cpp
 	$(CC) -std=c++23 -fpic -c -o $@ $(SOLIDITY_INCLUDES) $(BREW_INCLUDES) solidityBridge.cpp
 
-libwalacastsolidity.jnilib:	com_certora_wala_cast_solidity_jni_SolidityJNIBridge.o solidityBridge.o
+translator.o:	solidityBridge.h translator.cpp
+	$(CC) -std=c++23 -fpic -c -o $@ $(SOLIDITY_INCLUDES) $(BREW_INCLUDES)  $(CAST_INCLUDES) -I$(JNI_INCLUDE) -I$(JNI_MD_INCLUDE) translator.cpp
+
+libwalacastsolidity.jnilib:	com_certora_wala_cast_solidity_jni_SolidityJNIBridge.o solidityBridge.o translator.o
 	$(CC) -dynamiclib -o $@ $^ $(SOLIDITY_LIB_DIRS) $(BOOST_LIB_DIRS) $(SOLIDITY_LIBS) $(BOOST_LIBS) -lstdc++
