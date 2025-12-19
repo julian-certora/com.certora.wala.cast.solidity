@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="/Users/julian/.m2/repository/com/ibm/wala/com.ibm.wala.cast/1.6.13-SNAPSHOT/com.ibm.wala.cast-1.6.13-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/Users/julian/.m2/repository/com/ibm/wala/com.ibm.wala.util/1.6.13-SNAPSHOT/com.ibm.wala.util-1.6.13-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/Users/julian/.m2/repository/com/ibm/wala/com.ibm.wala.core/1.6.13-SNAPSHOT/com.ibm.wala.core-1.6.13-SNAPSHOT.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
