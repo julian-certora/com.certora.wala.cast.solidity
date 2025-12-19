@@ -12,4 +12,7 @@ class Translator : public ASTConstVisitor {
 public:
     virtual bool visitNode(ASTNode const&) override;
 
+    virtual bool visit(const SourceUnit &_node) override;
+    
+    virtual bool visit(const ContractDefinition &_node) override;
 };

@@ -75,7 +75,7 @@ void Java_com_certora_wala_cast_solidity_jni_SolidityJNIBridge_translate
     const char *fn = env->GetStringUTFChars(fileName, 0);
     int id = env->GetIntField(self, env->GetFieldID(env->GetObjectClass(self), "id", "I"));
     Translator xlator;
-    xlator.visit(compilers[id]->ast(std::string(fn)));
+    compilers[id]->ast(std::string(fn)).accept(xlator);
     env->ReleaseStringUTFChars(fileName, fn);
 }
 
