@@ -8,25 +8,41 @@
 #include "CAstWrapper.h"
 
 bool Translator::visitNode(ASTNode const&_node) {
+    indent();
+    level++;
     std::cout << _node.location() << " " << _node.id() << " " << typeid(_node).name() << std::endl;
+    jobject nothing = cast.makeNode(cast.EMPTY);
+    ret(nothing);
     return true;
+}
+
+void Translator::endVisitNode(ASTNode const&_node) {
+    level--;
 }
 
 bool Translator::visit(const SourceUnit &_node) {
+    visitNode(_node);
     std::vector<ASTPointer<ASTNode>> nodes = _node.nodes();
-    for (std::vector<ASTPointer<ASTNode>>::iterator t=nodes.begin();                  t!=nodes.end();
+    size_t len = nodes.size();
+    jobject children[ len ];
+    int i = 0;
+    for (std::vector<ASTPointer<ASTNode>>::iterator t=nodes.begin();
+         t != nodes.end();
          ++t)
     {
         t->get()->accept(*this);
+        children[i++] = last();
     }
-    return true;
+    return false;
 }
 
 bool Translator::visit(const ContractDefinition &_node) {
+    visitNode(_node);
     jobject n = cast.makeConstant( _node.name().c_str() );
     jclass obj = jniEnv->FindClass("java/lang/Object");
     jmethodID toString = jniEnv->GetMethodID(obj, "toString", "()Ljava/lang/String;");
-    std::cout 
+    indent();
+    std::cout
         << "contract "
         <<  jniEnv->GetStringUTFChars((jstring)jniEnv->CallObjectMethod(n, toString), 0)
         << std::endl;

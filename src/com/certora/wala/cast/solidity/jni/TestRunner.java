@@ -5,7 +5,7 @@ public class TestRunner {
 		try (SolidityJNIBridge test = new SolidityJNIBridge()) {
 			test.loadFiles(args);
 			for(String f : test.files()) {
-				System.out.println(f);
+				System.out.println("file " + f);
 				test.translate(f);
 			}
 		} catch (Exception e) {

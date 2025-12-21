@@ -16,11 +16,28 @@ class Translator : public ASTConstVisitor {
 private:
     JNIEnv *jniEnv;
     CAstWrapper cast;
+    jobject tree;
     
+    void ret(jobject v) {
+        tree = v;
+    }
+    
+    jobject last() {
+        return tree;
+    }
+    
+    int level = 0;
+    
+    void indent() {
+        for(int i = 0; i < level; i++) {
+            std::cout << " ";
+        }
+    }
 public:
     Translator(JNIEnv *env, Exceptions& ex, jobject ast) : cast(env, ex, ast), jniEnv(env) { }
     
     virtual bool visitNode(ASTNode const&) override;
+    virtual void endVisitNode(ASTNode const&_node) override;
 
     virtual bool visit(const Assignment &_node) override;
     virtual bool visit(const BinaryOperation &_node) override;

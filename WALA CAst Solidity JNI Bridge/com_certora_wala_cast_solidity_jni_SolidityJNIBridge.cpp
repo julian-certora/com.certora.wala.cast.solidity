@@ -41,7 +41,7 @@ void Java_com_certora_wala_cast_solidity_jni_SolidityJNIBridge_loadFiles(
     int len = env->GetArrayLength(filesAndNames);
     const char *data[len];
     for(int i = 0; i < len; i++) {
-        data[i] = env->GetStringUTFChars((jstring)env->GetObjectArrayElement(filesAndNames, i), 0);
+        data[i] = env->GetStringUTFChars((jstring)env->GetObjectArrayElement(filesAndNames, i), NULL);
     }
 
     solidity::StringMap sources = gatherSources(len, data);
