@@ -110,7 +110,19 @@ bool Translator::visit(const IndexAccess &_node) {
 }
 
 bool Translator::visit(const InheritanceSpecifier &_node) {
-    return visitNode(_node);
+    bool ret = visitNode(_node);
+    indent();
+    std::cout << "super type ";
+    const std::vector<ASTString> names = _node.name().path();
+    for (std::vector<ASTString>::const_iterator t = names.begin();
+         t != names.end();
+         ++t)
+    {
+        std::cout << t->data();
+    }
+    
+    std::cout << std::endl;
+    return ret;
 }
 
 bool Translator::visit(const Literal &_node) {
