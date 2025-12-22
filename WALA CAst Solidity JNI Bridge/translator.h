@@ -44,15 +44,25 @@ private:
         return tree;
     }
     
-    int level = 0;
+    int level;
     
     void indent() {
         for(int i = 0; i < level; i++) {
             std::cout << " ";
         }
     }
+    
+    jobject print(jobject v) {
+        jclass obj = jniEnv->FindClass("java/lang/Object");
+        jmethodID toString = jniEnv->GetMethodID(obj, "toString", "()Ljava/lang/String;");
+        std::cout << jniEnv->GetStringUTFChars((jstring)jniEnv->CallObjectMethod(v, toString), 0);
+        return v;
+    }
+    
 public:
-    Translator(JNIEnv *env, Exceptions& ex, jobject ast) : cast(env, ex, ast), jniEnv(env) { }
+    Translator(JNIEnv *env, Exceptions& ex, jobject ast) : cast(env, ex, ast), jniEnv(env) {
+        level = 0;
+    }
     
     virtual bool visitNode(ASTNode const&) override;
     virtual void endVisitNode(ASTNode const&_node) override;
