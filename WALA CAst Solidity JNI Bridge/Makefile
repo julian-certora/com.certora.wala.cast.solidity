@@ -30,7 +30,7 @@ com_certora_wala_cast_solidity_jni_SolidityJNIBridge.o:	com_certora_wala_cast_so
 solidityBridge.o:	solidityBridge.h solidityBridge.cpp
 	$(CC) -std=c++23 -fpic -c -o $@ $(SOLIDITY_INCLUDES) $(BREW_INCLUDES) solidityBridge.cpp
 
-translator.o:	solidityBridge.h translator.cpp
+translator.o:	solidityBridge.h translator.h translator.cpp
 	$(CC) -std=c++23 -fpic -c -o $@ $(SOLIDITY_INCLUDES) $(BREW_INCLUDES)  $(CAST_INCLUDES) -I$(JNI_INCLUDE) -I$(JNI_MD_INCLUDE) translator.cpp
 
 libwalacastsolidity.jnilib:	com_certora_wala_cast_solidity_jni_SolidityJNIBridge.o solidityBridge.o translator.o

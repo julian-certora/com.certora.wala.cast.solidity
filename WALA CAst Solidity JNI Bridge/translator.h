@@ -12,10 +12,28 @@
 
 using namespace solidity::frontend;
 
+std::map<std::string, jobject> types;
+
+class Context {
+private:
+    Context *_parent;
+    
+protected:
+    Context(Context *parent) : _parent(parent) { }
+    
+public:
+    Context *parent() { return _parent; }
+    virtual void addSuperclass(std::string superType) = 0;
+    virtual std::vector<jobject> superClasses() = 0;
+};
+
 class Translator : public ASTConstVisitor {
 private:
     JNIEnv *jniEnv;
     CAstWrapper cast;
+    
+    Context *context = NULL;
+    
     jobject tree;
     
     void ret(jobject v) {
@@ -43,6 +61,7 @@ public:
     virtual bool visit(const BinaryOperation &_node) override;
     virtual bool visit(const Block &_node) override;
     virtual bool visit(const ContractDefinition &_node) override;
+    virtual void endVisit(const ContractDefinition &_node) override;
     virtual bool visit(const ElementaryTypeName &_node) override;
     virtual bool visit(const ElementaryTypeNameExpression &_node) override;
     virtual bool visit(const EmitStatement &_node) override;
