@@ -1,0 +1,302 @@
+package com.certora.wala.cast.solidity.loader;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import com.certora.wala.cast.solidity.jni.SolidityJNIBridge;
+import com.certora.wala.cast.solidity.types.SolidityTypes;
+import com.ibm.wala.analysis.typeInference.PrimitiveType;
+import com.ibm.wala.cast.ir.translator.TranslatorToCAst;
+import com.ibm.wala.cast.ir.translator.TranslatorToIR;
+import com.ibm.wala.cast.loader.CAstAbstractModuleLoader;
+import com.ibm.wala.cast.tree.CAst;
+import com.ibm.wala.cast.tree.CAstEntity;
+import com.ibm.wala.cfg.InducedCFG;
+import com.ibm.wala.classLoader.IClassLoader;
+import com.ibm.wala.classLoader.IMethod;
+import com.ibm.wala.classLoader.JavaLanguage.JavaInstructionFactory;
+import com.ibm.wala.classLoader.Language;
+import com.ibm.wala.classLoader.Module;
+import com.ibm.wala.classLoader.ModuleEntry;
+import com.ibm.wala.classLoader.SourceFileModule;
+import com.ibm.wala.core.util.strings.Atom;
+import com.ibm.wala.ipa.callgraph.AnalysisOptions;
+import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ipa.callgraph.Context;
+import com.ibm.wala.ipa.callgraph.IAnalysisCacheView;
+import com.ibm.wala.ipa.callgraph.impl.AbstractRootMethod;
+import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
+import com.ibm.wala.ipa.callgraph.propagation.PointerAnalysis;
+import com.ibm.wala.ipa.callgraph.propagation.PointerKey;
+import com.ibm.wala.ipa.cha.IClassHierarchy;
+import com.ibm.wala.ipa.modref.ExtendedHeapModel;
+import com.ibm.wala.ipa.modref.ModRef.ModVisitor;
+import com.ibm.wala.ipa.modref.ModRef.RefVisitor;
+import com.ibm.wala.shrike.shrikeCT.InvalidClassFileException;
+import com.ibm.wala.ssa.SSAInstruction;
+import com.ibm.wala.ssa.SSAInstructionFactory;
+import com.ibm.wala.types.ClassLoaderReference;
+import com.ibm.wala.types.MethodReference;
+import com.ibm.wala.types.TypeName;
+import com.ibm.wala.types.TypeReference;
+import com.ibm.wala.util.collections.Pair;
+
+public class SolidityLoader extends CAstAbstractModuleLoader {
+	SolidityJNIBridge solidityCode = new SolidityJNIBridge();
+	
+	@Override
+	public void init(List<Module> modules) {
+		
+		for(Module m : modules) {
+			assert m instanceof SourceFileModule;
+		}
+		
+		int i = 0;
+		String[] files = new String[ modules.size()*2 ];
+		for(Module m : modules) {
+			SourceFileModule f = (SourceFileModule) m;
+			files[i++] = f.getAbsolutePath();
+			files[i++] = f.getName();
+		}
+		
+		solidityCode.loadFiles(files);
+		
+		super.init(modules);
+		
+	}
+
+	public SolidityLoader(IClassHierarchy cha, IClassLoader parent) {
+		super(cha, parent);
+	}
+
+	@Override	
+	public SSAInstructionFactory getInstructionFactory() {
+		return getLanguage().instructionFactory();
+	}
+
+	private static final Language solidity = new Language() {
+
+		@Override
+		public TypeReference[] getArrayInterfaces() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Language getBaseLanguage() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public TypeReference getConstantType(Object o) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Set<Language> getDerivedLanguages() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public AbstractRootMethod getFakeRootMethod(IClassHierarchy cha, AnalysisOptions options,
+				IAnalysisCacheView cache) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Object getMetadataToken(Object value) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Atom getName() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public TypeReference getPointerType(TypeReference pointee) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public PrimitiveType getPrimitive(TypeReference reference) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public TypeReference getRootType() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public TypeReference getStringType() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public TypeReference getThrowableType() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Collection<TypeReference> inferInvokeExceptions(MethodReference target, IClassHierarchy cha)
+				throws InvalidClassFileException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		private final SSAInstructionFactory insts = new JavaInstructionFactory();
+
+		@Override
+		public SSAInstructionFactory instructionFactory() {
+			return insts;
+		}
+
+		@Override
+		public boolean isBooleanType(TypeReference t) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isCharType(TypeReference t) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isDoubleType(TypeReference t) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isFloatType(TypeReference t) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isIntType(TypeReference t) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isLongType(TypeReference t) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isMetadataType(TypeReference t) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isNullType(TypeReference t) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isStringType(TypeReference t) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isVoidType(TypeReference t) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public TypeName lookupPrimitiveType(String name) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public InducedCFG makeInducedCFG(SSAInstruction[] instructions, IMethod method, Context context) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public <T extends InstanceKey> ModVisitor<T, ? extends ExtendedHeapModel> makeModVisitor(CGNode n,
+				Collection<PointerKey> result, PointerAnalysis<T> pa, ExtendedHeapModel h,
+				boolean ignoreAllocHeapDefs) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public <T extends InstanceKey> RefVisitor<T, ? extends ExtendedHeapModel> makeRefVisitor(CGNode n,
+				Collection<PointerKey> result, PointerAnalysis<T> pa, ExtendedHeapModel h) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean methodsHaveDeclaredParameterTypes() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean modelConstant(Object o) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void registerDerivedLanguage(Language l) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	};
+	
+	@Override
+	public Language getLanguage() {
+		return solidity;
+	}
+
+	@Override
+	public ClassLoaderReference getReference() {
+		return SolidityTypes.solidity;
+	}
+
+	@Override
+	protected TranslatorToCAst getTranslatorToCAst(CAst ast, ModuleEntry M, List<Module> modules) throws IOException {
+		SourceFileModule f = (SourceFileModule)M;
+		return solidityCode.new SolidityFileTranslator(f.getAbsolutePath());
+	}
+
+	@Override
+	protected TranslatorToIR initTranslator(Set<Pair<CAstEntity, ModuleEntry>> topLevelEntities) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected boolean shouldTranslate(CAstEntity entity) {
+		return true;
+	}
+
+}

@@ -33,14 +33,6 @@ JNIEXPORT jobject JNICALL Java_com_certora_wala_cast_solidity_jni_SolidityJNIBri
 
 /*
  * Class:     com_certora_wala_cast_solidity_jni_SolidityJNIBridge
- * Method:    translate
- * Signature: (Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_com_certora_wala_cast_solidity_jni_SolidityJNIBridge_translate
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     com_certora_wala_cast_solidity_jni_SolidityJNIBridge
  * Method:    close
  * Signature: ()V
  */

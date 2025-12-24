@@ -1,4 +1,4 @@
-package com.certora.wala.cast.solidity.types;
+package com.certora.wala.cast.solidity.loader;
 
 import java.util.Collection;
 import java.util.Collections;

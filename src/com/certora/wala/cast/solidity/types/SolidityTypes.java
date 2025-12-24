@@ -1,0 +1,19 @@
+package com.certora.wala.cast.solidity.types;
+
+import com.ibm.wala.core.util.strings.Atom;
+import com.ibm.wala.types.ClassLoaderReference;
+import com.ibm.wala.types.TypeReference;
+
+public class SolidityTypes {
+
+	public static ClassLoaderReference solidity = new ClassLoaderReference(Atom.findOrCreateUnicodeAtom("solidity"), null, null);
+	
+	public static TypeReference uint8 = TypeReference.findOrCreate(solidity, "Puint8;");
+
+	public static TypeReference uint256 = TypeReference.findOrCreate(solidity, "Puint256;");
+
+	public static TypeReference address = TypeReference.findOrCreate(solidity, "Paddress;");
+
+	public static TypeReference string = TypeReference.findOrCreate(solidity, "Pstring;");
+
+}

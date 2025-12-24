@@ -12,36 +12,109 @@
 
 using namespace solidity::frontend;
 
-std::map<std::string, jobject> types;
+extern std::map<std::string, jobject> types;
 
-class Context {
+class DelegatingContext {
 private:
-    Context *_parent;
+    DelegatingContext *_parent;
     
 protected:
-    Context(Context *parent) : _parent(parent) { }
+    DelegatingContext(DelegatingContext *parent) : _parent(parent) { }
     
 public:
-    Context *parent() { return _parent; }
-    virtual void addSuperclass(std::string superType) = 0;
-    virtual std::vector<jobject> superClasses() = 0;
+    virtual DelegatingContext *parent() { return _parent; }
+    
+    virtual jobject entity() {
+        return parent()->entity();
+    }
+    virtual void addSuperclass(std::string superType) {
+        parent()->addSuperclass(superType);
+    }
+    
+    virtual std::vector<jobject>& superClasses() {
+        return parent()->superClasses();
+    }
+    
+    virtual void registerFunction(jstring name, jobject fun) {
+        parent()->registerFunction(name, fun);
+    }
+    
+    virtual void registerVariable(jstring name, jobject var) {
+        parent()->registerVariable(name, var);
+    }
+    
+    virtual std::map<jstring, jobject>& functions() {
+        return parent()->functions();
+    }
+    
+    virtual std::map<jstring, jobject>& variables() {
+        return parent()->variables();
+    }
+};
+
+class EntityContext : public virtual DelegatingContext {
+private:
+    jobject _entity;
+    
+public:
+    EntityContext(jobject entity, DelegatingContext *parent) : _entity(entity), DelegatingContext(parent) { }
+    
+    virtual jobject entity() {
+        return _entity;
+    }
+    
+};
+
+class FunctionContainerContext : public virtual DelegatingContext {
+private:
+    std::map<jstring, jobject> functionContainer;
+ 
+public:
+    FunctionContainerContext(DelegatingContext *parent) : DelegatingContext(parent) { }
+    
+    virtual void registerFunction(jstring name, jobject fun) {
+        functionContainer[name] = fun;
+    }
+    
+    virtual std::map<jstring, jobject>& functions() {
+        return functionContainer;
+    }
+};
+
+class VariableContainerContext  : public virtual DelegatingContext {
+private:
+    std::map<jstring, jobject> variableContainer;
+ 
+public:
+    VariableContainerContext(DelegatingContext *parent) : DelegatingContext(parent) { }
+    
+    virtual void registerVariable(jstring name, jobject fun) {
+        variableContainer[name] = fun;
+    }
+    
+    virtual std::map<jstring, jobject>& variables() {
+        return variableContainer;
+    }
+};
+
+class RootContext : virtual public EntityContext, virtual public DelegatingContext  {
+public:
+    RootContext(jobject entity) : EntityContext(entity, NULL), DelegatingContext(NULL) { }
 };
 
 class Translator : public ASTConstVisitor {
 private:
     JNIEnv *jniEnv;
     CAstWrapper cast;
+    const char *fileName;
+    jobject xlator;
     
-    Context *context = NULL;
+    DelegatingContext *context;
     
     jobject tree;
     
     void ret(jobject v) {
         tree = v;
-    }
-    
-    jobject last() {
-        return tree;
     }
     
     int level;
@@ -59,10 +132,26 @@ private:
         return v;
     }
     
-public:
-    Translator(JNIEnv *env, Exceptions& ex, jobject ast) : cast(env, ex, ast), jniEnv(env) {
-        level = 0;
+    jobject makePosition(const solidity::frontend::ASTNode::SourceLocation& loc) {
+        jclass type = jniEnv->GetObjectClass(xlator);
+        jmethodID mp = jniEnv->GetMethodID(type, "makePosition", "(Ljava/lang/String;II)Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;");
+        return jniEnv->CallObjectMethod(xlator, mp, jniEnv->NewStringUTF(fileName), loc.start, loc.end);
     }
+    
+    jobject record(jobject castNode, const solidity::frontend::ASTNode::SourceLocation& loc) {
+        jclass type = jniEnv->GetObjectClass(xlator);
+        jmethodID mp = jniEnv->GetMethodID(type, "record", "(Lcom/ibm/wala/cast/tree/CAstNode;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;)V");
+        jniEnv->CallVoidMethod(xlator, mp, castNode, makePosition(loc));
+        return castNode;
+    }
+    
+public:
+    jobject last() {
+        return tree;
+    }
+
+    Translator(const char *fileName, JNIEnv *env, Exceptions& ex, jobject xlator, jobject fileEntity) :
+        fileName(fileName), cast(env, ex, xlator), jniEnv(env), xlator(xlator), level(0), context(new RootContext(fileEntity)) { }
     
     virtual bool visitNode(ASTNode const&) override;
     virtual void endVisitNode(ASTNode const&_node) override;
@@ -71,6 +160,8 @@ public:
     virtual bool visit(const BinaryOperation &_node) override;
     virtual bool visit(const Block &_node) override;
     virtual bool visit(const ContractDefinition &_node) override;
+    std::map<std::string, jobject>::iterator extracted();
+    
     virtual void endVisit(const ContractDefinition &_node) override;
     virtual bool visit(const ElementaryTypeName &_node) override;
     virtual bool visit(const ElementaryTypeNameExpression &_node) override;

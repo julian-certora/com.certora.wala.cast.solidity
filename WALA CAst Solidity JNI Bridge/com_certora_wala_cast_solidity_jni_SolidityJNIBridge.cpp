@@ -7,6 +7,7 @@
 #include "solidityBridge.h"
 #include "translator.h"
 #include "com_certora_wala_cast_solidity_jni_SolidityJNIBridge.h"
+#include "com_certora_wala_cast_solidity_jni_SolidityJNIBridge_SolidityFileTranslator.h"
 
 #include "Exceptions.h"
 #include "CAstWrapper.h"
@@ -74,7 +75,7 @@ jobject Java_com_certora_wala_cast_solidity_jni_SolidityJNIBridge_files(
     return result;
 }
 
-void Java_com_certora_wala_cast_solidity_jni_SolidityJNIBridge_translate
+jobject Java_com_certora_wala_cast_solidity_jni_SolidityJNIBridge_00024SolidityFileTranslator_translate
   (JNIEnv *env, jobject self, jstring fileName)
 {
     TRY(exp, env)
@@ -82,12 +83,16 @@ void Java_com_certora_wala_cast_solidity_jni_SolidityJNIBridge_translate
     const char *fn = env->GetStringUTFChars(fileName, 0);
     
     int id = env->GetIntField(self, env->GetFieldID(env->GetObjectClass(self), "id", "I"));
+    jobject entity = env->GetObjectField(self, env->GetFieldID(env->GetObjectClass(self), "fileEntity", "Lcom/ibm/wala/cast/tree/CAstEntity;"));
+ 
+    Translator* xlator = new Translator(fn, env, exp, self, entity);
+    compilers[id]->ast(std::string(fn)).accept(*xlator);
     
-    Translator xlator(env, exp, self);
-    compilers[id]->ast(std::string(fn)).accept(xlator);
-  
     env->ReleaseStringUTFChars(fileName, fn);
-
+    delete xlator;
+    
+    return entity;
+    
     CATCH()
  }
 
