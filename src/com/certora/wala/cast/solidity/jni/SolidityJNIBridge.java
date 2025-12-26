@@ -204,6 +204,11 @@ public class SolidityJNIBridge extends NativeBridge implements AutoCloseable {
 					return null;
 				}
 			}
+			
+			@Override
+			public String toString() {
+				return "[" + getFirstOffset() + "-" + getLastOffset() + "]";
+			}
 		};
 	}
 

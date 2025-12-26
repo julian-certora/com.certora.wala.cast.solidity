@@ -9,6 +9,13 @@
 
 std::map<std::string, jobject> types;
 
+jobject Translator::getType(std::string tn) {
+    jclass sct = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/SolidityCAstType");
+    jmethodID gt = jniEnv->GetStaticMethodID(sct, "get", "(Ljava/lang/String;)Lcom/ibm/wala/cast/tree/CAstType;");
+    jobject jtn = jniEnv->NewStringUTF(tn.c_str());
+    return jniEnv->CallStaticObjectMethod(sct, gt, jtn);
+}
+
 bool Translator::visitNode(ASTNode const&_node) {
     level++;
     indent();
@@ -42,7 +49,7 @@ bool Translator::visit(const SourceUnit &_node) {
     return false;
 }
 
-class ContractContext : public virtual VariableContainerContext, public virtual FunctionContainerContext, public virtual DelegatingContext {
+class ContractContext : public virtual VariableContainerContext, public virtual FunctionContainerContext {
 private:
     std::vector<jobject> supers;
     
@@ -75,7 +82,8 @@ void Translator::endVisit(const ContractDefinition &_node) {
     jobject supersSet = jniEnv->NewObject(sCls, sCtor);
     for (std::vector<jobject>::iterator t=supers.begin();
          t != supers.end();
-         ++t) {
+         ++t)
+    {
         jniEnv->CallBooleanMethod(supersSet, add, *t);
     }
     jclass ctCls = jniEnv->FindClass("com/certora/wala/cast/solidity/loader/ContractType");
@@ -94,13 +102,14 @@ void Translator::endVisit(const ContractDefinition &_node) {
     std::map<jstring, jobject>& functions = context->functions();
     for (std::map<jstring,jobject>::iterator t=functions.begin();
          t != functions.end();
-         ++t) {
+         ++t)
+    {
         jniEnv->CallBooleanMethod(entitiesSet, add, t->second);
     }
 
     jclass ceCls = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/ContractEntity");
-    jmethodID ceCtor = jniEnv->GetMethodID(ceCls, "<init>", "(Ljava/lang/String;Lcom/ibm/wala/cast/tree/CAstType;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;Ljava/util/Set;)V");
-    jniEnv->NewObject(ceCls, ceCtor, entityName, makePosition(_node.location()), makePosition(_node.nameLocation()));
+    jmethodID ceCtor = jniEnv->GetMethodID(ceCls, "<init>", "(Lcom/ibm/wala/cast/tree/CAstType$Class;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;Ljava/util/Set;)V");
+    jniEnv->NewObject(ceCls, ceCtor, type, makePosition(_node.location()), makePosition(_node.nameLocation()), entitiesSet);
     
     context = context->parent();
     
@@ -220,6 +229,60 @@ bool Translator::visit(const FunctionCall &_node) {
 
 bool Translator::visit(const FunctionDefinition &_node) {
     return visitNode(_node);
+}
+
+void Translator::endVisit(const FunctionDefinition &_node) {
+    const std::vector<ASTPointer<VariableDeclaration>> parameters = _node.parameters();
+    jstring funName = jniEnv->NewStringUTF(_node.isConstructor()? "<init>": _node.name().c_str());
+ 
+    int i = 0;
+    int len = (int)parameters.size();
+    jclass ctc = jniEnv->FindClass("com/ibm/wala/cast/tree/CAstType");
+    jobjectArray children = jniEnv->NewObjectArray(len, ctc, NULL);
+    for (std::vector<ASTPointer<VariableDeclaration>>::const_iterator t=parameters.begin();
+         t != parameters.end();
+         ++t, i++)
+    {
+        jobject type = getType(std::string(t->get()->type()->toString()));
+        jniEnv->SetObjectArrayElement(children, i, type);
+    }
+
+    jobject retType = NULL;
+    const std::vector<ASTPointer<VariableDeclaration>> rets = _node.returnParameters();
+    if (rets.size() == 1) {
+        std::string retTypeName = rets[0].get()->type()->toString();
+        retType = getType(retTypeName);
+    } else {
+        // todo
+    }
+    
+    jclass sft = jniEnv->FindClass("com/certora/wala/cast/solidity/loader/FunctionType");
+    jmethodID sfCtor = jniEnv->GetMethodID(sft, "<init>", "(Ljava/lang/String;Lcom/ibm/wala/cast/tree/CAstType;[Lcom/ibm/wala/cast/tree/CAstType;)V");
+    jobject funType = jniEnv->NewObject(sft, sfCtor, funName, retType, children);
+    
+    jobject loc = makePosition(_node.location());
+    
+    jobject nameLoc = makePosition(_node.nameLocation());
+
+    i = 0;
+    jclass jsc = jniEnv->FindClass("java/lang/String");
+    jclass wpc = jniEnv->FindClass("Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;");
+    jobjectArray argNames = jniEnv->NewObjectArray(len, jsc, NULL);
+    jobjectArray argLocations = jniEnv->NewObjectArray(len, wpc, NULL);
+    for (std::vector<ASTPointer<VariableDeclaration>>::const_iterator t=parameters.begin();
+         t != parameters.end();
+         ++t, i++)
+    {
+        jniEnv->SetObjectArrayElement(argNames, i, jniEnv->NewStringUTF(t->get()->name().c_str()));
+        jniEnv->SetObjectArrayElement(argLocations, i, makePosition(t->get()->location()));
+    }
+
+    jclass sfet = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/FunctionEntity");
+    jmethodID sfeCtor = jniEnv->GetMethodID(sfet, "<init>", "(Ljava/lang/String;Lcom/ibm/wala/cast/tree/CAstType$Function;[Ljava/lang/String;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;[Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;Lcom/ibm/wala/cast/tree/CAstNode;)V");
+    jobject funEntity = jniEnv->NewObject(sfet, sfeCtor, funName, funType, argNames, loc, nameLoc, argLocations, last());
+ 
+    context->registerFunction(funName, funEntity);
+    //cast.addChildEntity(context->entity(), NULL, funEntity);
 }
 
 bool Translator::visit(const Identifier &_node) {
@@ -350,14 +413,10 @@ bool Translator::visit(const UserDefinedTypeName &_node) {
 }
 
 bool Translator::visit(const VariableDeclaration &_node) {
-    jclass sct = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/SolidityCAstType");
-    jmethodID gt = jniEnv->GetStaticMethodID(sct, "get", "(Ljava/lang/String;)Lcom/ibm/wala/cast/tree/CAstType;");
     string tn = _node.type()->identifier();
-    std::cout << sct << " " << gt << " " << tn << std::endl;
-    jobject jtn = jniEnv->NewStringUTF(tn.c_str());
-    
-    jobject type = jniEnv->CallStaticObjectMethod(sct, gt, jtn);
-    
+
+    jobject type = getType(tn);
+ 
     return visitNode(_node);
 }
 

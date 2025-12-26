@@ -145,6 +145,8 @@ private:
         return castNode;
     }
     
+    jobject getType(std::string tn);
+    
 public:
     jobject last() {
         return tree;
@@ -160,8 +162,6 @@ public:
     virtual bool visit(const BinaryOperation &_node) override;
     virtual bool visit(const Block &_node) override;
     virtual bool visit(const ContractDefinition &_node) override;
-    std::map<std::string, jobject>::iterator extracted();
-    
     virtual void endVisit(const ContractDefinition &_node) override;
     virtual bool visit(const ElementaryTypeName &_node) override;
     virtual bool visit(const ElementaryTypeNameExpression &_node) override;
@@ -170,6 +170,7 @@ public:
     virtual bool visit(const ExpressionStatement &_node) override;
     virtual bool visit(const FunctionCall &_node) override;
     virtual bool visit(const FunctionDefinition &_node) override;
+    virtual void endVisit(const FunctionDefinition &_node) override;
     virtual bool visit(const Identifier &_node) override;
     virtual bool visit(const IdentifierPath &_node) override;
     virtual bool visit(const IfStatement &_node) override;
@@ -185,6 +186,10 @@ public:
     virtual bool visit(const SourceUnit &_node) override;
     virtual bool visit(const TupleExpression &_node) override;
     virtual bool visit(const UserDefinedTypeName &_node) override;
+    void extracted(const VariableDeclaration &_node);
+    
+    void extracted();
+    
     virtual bool visit(const VariableDeclaration &_node) override;
     virtual bool visit(const VariableDeclarationStatement &_node) override;
 

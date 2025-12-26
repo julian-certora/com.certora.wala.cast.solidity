@@ -24,10 +24,15 @@ public class SolidityCAstType implements CAstType.Primitive {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		return "<" + name + ">";
+	}
+	
 	public static final Map<String,CAstType> types = HashMapFactory.make();
 	
 	static {
-		for(String nm : new String[] {"unit8", "unit256", "address", "string"}) {
+		for(String nm : new String[] {"uint8", "uint256", "address", "string", "bool"}) {
 			types.put(nm, new SolidityCAstType(nm));
 		}
 	}
