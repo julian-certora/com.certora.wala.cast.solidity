@@ -32,7 +32,7 @@ public class SolidityCAstType implements CAstType.Primitive {
 	public static final Map<String,CAstType> types = HashMapFactory.make();
 	
 	static {
-		for(String nm : new String[] {"uint8", "uint256", "address", "string", "bool"}) {
+		for(String nm : new String[] {"uint8", "uint256", "address", "string", "bool", "void"}) {
 			types.put(nm, new SolidityCAstType(nm));
 		}
 	}

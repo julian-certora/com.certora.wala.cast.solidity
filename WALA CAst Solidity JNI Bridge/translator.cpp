@@ -109,11 +109,11 @@ void Translator::endVisit(const ContractDefinition &_node) {
 
     jclass ceCls = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/ContractEntity");
     jmethodID ceCtor = jniEnv->GetMethodID(ceCls, "<init>", "(Lcom/ibm/wala/cast/tree/CAstType$Class;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;Ljava/util/Set;)V");
-    jniEnv->NewObject(ceCls, ceCtor, type, makePosition(_node.location()), makePosition(_node.nameLocation()), entitiesSet);
+    jobject contractEntity = jniEnv->NewObject(ceCls, ceCtor, type, makePosition(_node.location()), makePosition(_node.nameLocation()), entitiesSet);
     
     context = context->parent();
     
-    endVisitNode(_node);
+    cast.addChildEntity(context->entity(), NULL, contractEntity);
 }
 
 bool Translator::visit(const Assignment &_node) {

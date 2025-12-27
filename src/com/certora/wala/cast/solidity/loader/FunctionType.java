@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.certora.wala.cast.solidity.tree.SolidityCAstType;
 import com.ibm.wala.cast.tree.CAstType;
 import com.ibm.wala.cast.tree.CAstType.Function;
 
@@ -15,7 +16,7 @@ public class FunctionType implements Function {
 
 	public FunctionType(String name, CAstType returnType, CAstType... args) {
 		this.name = name;
-		this.returnType = returnType;
+		this.returnType = returnType==null? SolidityCAstType.get("void"): returnType;
 		this.args = args;
 	}
 	

@@ -9,7 +9,7 @@ public class TestRunner {
 			System.out.println(test.files());
 			for(String f : test.files()) {
 				System.out.println("file " + f);
-				CAstPrinter.print(test.translateFile(f));
+				System.out.println(CAstPrinter.print(test.translateFile(f)));
 			}
 		} catch (Exception e) {
 			throw e;
