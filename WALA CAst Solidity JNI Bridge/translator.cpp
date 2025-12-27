@@ -30,7 +30,6 @@ void Translator::endVisitNode(ASTNode const&_node) {
 }
 
 bool Translator::visit(const SourceUnit &_node) {
-    visitNode(_node);
     std::vector<ASTPointer<ASTNode>> nodes = _node.nodes();
     int len = (int)nodes.size();
     jclass cnc = jniEnv->FindClass("com/ibm/wala/cast/tree/CAstNode");
@@ -68,7 +67,6 @@ public:
 };
 
 bool Translator::visit(const ContractDefinition &_node) {
-    visitNode(_node);
     context = new ContractContext(context);
     jobject n = cast.makeConstant( _node.name().c_str() );
     return true;
@@ -90,11 +88,6 @@ void Translator::endVisit(const ContractDefinition &_node) {
     jmethodID ctCtor = jniEnv->GetMethodID(ctCls, "<init>", "(Ljava/lang/String;Ljava/util/Set;)V");
     jstring entityName = jniEnv->NewStringUTF(_node.name().c_str());
     jobject type = jniEnv->NewObject(ctCls, ctCtor, entityName, supersSet);
-
-    indent();
-    std::cout << "contract ";
-    print(type);
-    std::cout << std::endl;
 
     types[_node.name()] = type;
     
@@ -155,10 +148,6 @@ bool Translator::visit(const BinaryOperation &_node) {
     jobject expr = cast.makeNode(cast.BINARY_EXPR, op, left, right);
     ret(record(expr, _node.location()));
     
-    indent();
-    std::cout << "expr: ";
-    print(expr);
-
     return false;
 }
 
@@ -194,7 +183,8 @@ bool Translator::visit(const EmitStatement &_node) {
 }
 
 bool Translator::visit(const EventDefinition &_node) {
-    return visitNode(_node);
+    // skip for now
+    return false;
 }
 
 bool Translator::visit(const ExpressionStatement &_node) {
@@ -228,7 +218,8 @@ bool Translator::visit(const FunctionCall &_node) {
 }
 
 bool Translator::visit(const FunctionDefinition &_node) {
-    return visitNode(_node);
+    _node.body().accept(*this);
+    return false;
 }
 
 void Translator::endVisit(const FunctionDefinition &_node) {
@@ -279,6 +270,7 @@ void Translator::endVisit(const FunctionDefinition &_node) {
 
     jclass sfet = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/FunctionEntity");
     jmethodID sfeCtor = jniEnv->GetMethodID(sfet, "<init>", "(Ljava/lang/String;Lcom/ibm/wala/cast/tree/CAstType$Function;[Ljava/lang/String;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;[Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;Lcom/ibm/wala/cast/tree/CAstNode;)V");
+    
     jobject funEntity = jniEnv->NewObject(sfet, sfeCtor, funName, funType, argNames, loc, nameLoc, argLocations, last());
  
     context->registerFunction(funName, funEntity);
@@ -286,7 +278,6 @@ void Translator::endVisit(const FunctionDefinition &_node) {
 }
 
 bool Translator::visit(const Identifier &_node) {
-    std::cout << _node.name() << " " << _node.location();
     ret(record(cast.makeNode(cast.VAR, cast.makeConstant(_node.name().c_str())), _node.location()));
     return false;
 }
@@ -343,7 +334,7 @@ bool Translator::visit(const InheritanceSpecifier &_node) {
 
     context->addSuperclass(typeName);
     
-    return visitNode(_node);
+    return false;
 }
 
 bool Translator::visit(const Literal &_node) {
@@ -413,13 +404,49 @@ bool Translator::visit(const UserDefinedTypeName &_node) {
 }
 
 bool Translator::visit(const VariableDeclaration &_node) {
-    string tn = _node.type()->identifier();
-
+    string tn = _node.type()->toString();
     jobject type = getType(tn);
- 
-    return visitNode(_node);
+    
+    jobject loc = makePosition(_node.location());
+    
+    const char *name = _node.name().c_str();
+    
+    bool isFinal = _node.isConstant();
+    
+    jobject value = NULL;
+    if (_node.value() != NULL) {
+        _node.value()->accept(*this);
+        value = last();
+    }
+
+     if (_node.isStateVariable()) {
+        jobject jname = cast.makeConstant(name);
+        jobject loc = makePosition(_node.location());
+        jobject nameLoc = makePosition(_node.nameLocation());
+        jobject field = cast.makeFieldEntity(context->entity(), jname, type, false, loc, nameLoc, NULL);
+        context->registerVariable(jniEnv->NewStringUTF(name), field);
+        
+    } else {
+        jobject symbol = cast.makeSymbol(name, type, isFinal);
+        ret(record(cast.makeNode(cast.DECL_STMT, cast.makeConstant(symbol), value), _node.location()));
+    }
+     
+    return false;
 }
 
 bool Translator::visit(const VariableDeclarationStatement &_node) {
-    return visitNode(_node);
+    int i = 0;
+    const std::vector<ASTPointer<VariableDeclaration>> names = _node.declarations();
+    jobjectArray elts = jniEnv->NewObjectArray(names.size(), jniEnv->FindClass("com/ibm/wala/cast/tree/CAstNode"), NULL);
+    for (std::vector<ASTPointer<VariableDeclaration>>::const_iterator t = names.begin();
+         t != names.end();
+         ++t, ++i)
+    {
+        t->get()->accept(*this);
+        jniEnv->SetObjectArrayElement(elts, i, last());
+    }
+    
+    ret(record(cast.makeNode(cast.BLOCK_STMT, elts), _node.location()));
+    
+    return false;
 }

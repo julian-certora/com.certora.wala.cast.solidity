@@ -6,7 +6,7 @@ JNI_MD_INCLUDE=$(JAVA)/include/darwin
 JNI_HEADERS=$(JNI_INCLUDE)/jni.h $(JNI_MD_INCLUDE)/jni_md.h
 
 SOLIDITY=/Users/julian/git/solidity
-SOLIDITY_DEPS=deps/range-v3 deps/nlohmann-json
+SOLIDITY_DEPS=deps/range-v3 deps/nlohmann-json deps/fmtlib
 SOLIDITY_DIRS=libevmasm liblangutil libsmtutil libsolc libsolidity libsolutil libyul 
 SOLIDITY_INCLUDES=-I$(SOLIDITY) $(foreach dep,$(SOLIDITY_DEPS),-I$(SOLIDITY)/$(dep)/include)
 SOLIDITY_LIB_DIRS=$(foreach dir,$(SOLIDITY_DIRS),-L$(SOLIDITY)/build/$(dir))
