@@ -116,7 +116,7 @@ bool Translator::visit(const Assignment &_node) {
     _node.rightHandSide().accept(*this);
     jobject rhs = last();
 
-    ret(print(record(cast.makeNode(cast.ASSIGN, lhs, rhs), _node.location())));
+    ret(record(cast.makeNode(cast.ASSIGN, lhs, rhs), _node.location()));
     return false;
 }
 
@@ -166,7 +166,7 @@ bool Translator::visit(const Block &_node) {
         jniEnv->SetObjectArrayElement(children, i, last());
     }
     
-    ret(record(print(cast.makeNode(cast.BLOCK_STMT, children)), _node.location()));
+    ret(record(cast.makeNode(cast.BLOCK_STMT, children), _node.location()));
     return false;
  }
 
@@ -191,7 +191,7 @@ bool Translator::visit(const ExpressionStatement &_node) {
     _node.expression().accept(*this);
     jobject expr = last();
     
-    ret(record(print(cast.makeNode(cast.EXPR_STMT, expr)), _node.location()));
+    ret(record(cast.makeNode(cast.EXPR_STMT, expr), _node.location()));
     
     return false;
 }
@@ -213,7 +213,7 @@ bool Translator::visit(const FunctionCall &_node) {
         jniEnv->SetObjectArrayElement(children, i, last());
     }
 
-    ret(record(print(cast.makeNode(cast.CALL, fun, children)), _node.location()));
+    ret(record(cast.makeNode(cast.CALL, fun, children), _node.location()));
     return false;
 }
 
@@ -297,9 +297,9 @@ bool Translator::visit(const IfStatement &_node) {
         _node.falseStatement()->accept(*this);
         jobject otherwise = last();
         
-        ret(record(print(cast.makeNode(cast.IF_STMT, cond, then, otherwise)), _node.location()));
+        ret(record(cast.makeNode(cast.IF_STMT, cond, then, otherwise), _node.location()));
     } else {
-        ret(record(print(cast.makeNode(cast.IF_STMT, cond, then)), _node.location()));
+        ret(record(cast.makeNode(cast.IF_STMT, cond, then), _node.location()));
     }
     
     return false;
@@ -383,9 +383,9 @@ bool Translator::visit(const Return &_node) {
     if (_node.expression() != NULL) {
         _node.expression()->accept(*this);
         jobject val = last();
-        ret(record(print(cast.makeNode(cast.RETURN, val)), _node.location()));
+        ret(record(cast.makeNode(cast.RETURN, val), _node.location()));
     } else {
-        ret(record(print(cast.makeNode(cast.RETURN)), _node.location()));
+        ret(record(cast.makeNode(cast.RETURN), _node.location()));
     }
     return false;
 }
