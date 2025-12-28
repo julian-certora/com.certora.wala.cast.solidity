@@ -167,6 +167,7 @@ public:
     virtual bool visit(const ElementaryTypeNameExpression &_node) override;
     virtual bool visit(const EmitStatement &_node) override;
     virtual bool visit(const EventDefinition &_node) override;
+    virtual void endVisit(const EventDefinition &_node) override;
     virtual bool visit(const ExpressionStatement &_node) override;
     virtual bool visit(const FunctionCall &_node) override;
     virtual bool visit(const FunctionDefinition &_node) override;

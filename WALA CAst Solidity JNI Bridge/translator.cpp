@@ -197,12 +197,59 @@ bool Translator::visit(const ElementaryTypeNameExpression &_node) {
 }
 
 bool Translator::visit(const EmitStatement &_node) {
-    return visitNode(_node);
+    _node.eventCall().accept(*this);
+    return false;
 }
 
 bool Translator::visit(const EventDefinition &_node) {
-    // skip for now
     return false;
+}
+
+void Translator::endVisit(const EventDefinition &_node) {
+        const std::vector<ASTPointer<VariableDeclaration>> parameters = _node.parameters();
+        jstring funName = jniEnv->NewStringUTF(_node.name().c_str());
+     
+        int i = 0;
+        int len = (int)parameters.size();
+        jclass ctc = jniEnv->FindClass("com/ibm/wala/cast/tree/CAstType");
+        jobjectArray children = jniEnv->NewObjectArray(len, ctc, NULL);
+        for (std::vector<ASTPointer<VariableDeclaration>>::const_iterator t=parameters.begin();
+             t != parameters.end();
+             ++t, i++)
+        {
+            jobject type = getType(t->get()->type());
+            jniEnv->SetObjectArrayElement(children, i, type);
+        }
+
+        jclass sft = jniEnv->FindClass("com/certora/wala/cast/solidity/loader/FunctionType");
+        jmethodID sfCtor = jniEnv->GetMethodID(sft, "<init>", "(Ljava/lang/String;Lcom/ibm/wala/cast/tree/CAstType;[Lcom/ibm/wala/cast/tree/CAstType;)V");
+        jobject funType = jniEnv->NewObject(sft, sfCtor, funName, NULL, children);
+        
+        jobject loc = makePosition(_node.location());
+        
+        jobject nameLoc = makePosition(_node.nameLocation());
+
+        i = 0;
+        jclass jsc = jniEnv->FindClass("java/lang/String");
+        jclass wpc = jniEnv->FindClass("Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;");
+        jobjectArray argNames = jniEnv->NewObjectArray(len, jsc, NULL);
+        jobjectArray argLocations = jniEnv->NewObjectArray(len, wpc, NULL);
+        for (std::vector<ASTPointer<VariableDeclaration>>::const_iterator t=parameters.begin();
+             t != parameters.end();
+             ++t, i++)
+        {
+            jniEnv->SetObjectArrayElement(argNames, i, jniEnv->NewStringUTF(t->get()->name().c_str()));
+            jniEnv->SetObjectArrayElement(argLocations, i, makePosition(t->get()->location()));
+        }
+
+        jclass sfet = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/EventEntity");
+        jmethodID sfeCtor = jniEnv->GetMethodID(sfet, "<init>", "(Ljava/lang/String;Lcom/ibm/wala/cast/tree/CAstType$Function;[Ljava/lang/String;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;[Lcom/ibm/wala/cast/tree/CAstSourcePositionMap$Position;)V");
+        
+        jobject funEntity = jniEnv->NewObject(sfet, sfeCtor, funName, funType, argNames, loc, nameLoc, argLocations);
+     
+        context->registerFunction(funName, funEntity);
+        //cast.addChildEntity(context->entity(), NULL, funEntity);
+    
 }
 
 bool Translator::visit(const ExpressionStatement &_node) {
