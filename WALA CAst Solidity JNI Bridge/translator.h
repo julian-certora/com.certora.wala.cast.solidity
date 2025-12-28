@@ -145,7 +145,7 @@ private:
         return castNode;
     }
     
-    jobject getType(std::string tn);
+    jobject getType(Type const* type);
     
 public:
     jobject last() {

@@ -9,11 +9,22 @@
 
 std::map<std::string, jobject> types;
 
-jobject Translator::getType(std::string tn) {
-    jclass sct = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/SolidityCAstType");
-    jmethodID gt = jniEnv->GetStaticMethodID(sct, "get", "(Ljava/lang/String;)Lcom/ibm/wala/cast/tree/CAstType;");
-    jobject jtn = jniEnv->NewStringUTF(tn.c_str());
-    return jniEnv->CallStaticObjectMethod(sct, gt, jtn);
+jobject Translator::getType(Type const* type) {
+    if (type->category() == Type::Category::Mapping) {
+        MappingType const* mapType = (MappingType const*)type;
+        jobject keyType = getType(mapType->keyType());
+        jobject valueType = getType(mapType->valueType());
+        jclass smt = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/SolidityMappingType");
+        jmethodID gt = jniEnv->GetStaticMethodID(smt, "get", "(Lcom/ibm/wala/cast/tree/CAstType;Lcom/ibm/wala/cast/tree/CAstType;)Lcom/ibm/wala/cast/tree/CAstType;");
+        return jniEnv->CallStaticObjectMethod(smt, gt, keyType, valueType);
+
+    } else {
+        std::string tn = type->toString();
+        jclass sct = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/SolidityCAstType");
+        jmethodID gt = jniEnv->GetStaticMethodID(sct, "get", "(Ljava/lang/String;)Lcom/ibm/wala/cast/tree/CAstType;");
+        jobject jtn = jniEnv->NewStringUTF(tn.c_str());
+        return jniEnv->CallStaticObjectMethod(sct, gt, jtn);
+    }
 }
 
 bool Translator::visitNode(ASTNode const&_node) {
@@ -95,6 +106,13 @@ void Translator::endVisit(const ContractDefinition &_node) {
     std::map<jstring, jobject>& functions = context->functions();
     for (std::map<jstring,jobject>::iterator t=functions.begin();
          t != functions.end();
+         ++t)
+    {
+        jniEnv->CallBooleanMethod(entitiesSet, add, t->second);
+    }
+    std::map<jstring, jobject>& fields = context->variables();
+    for (std::map<jstring,jobject>::iterator t=fields.begin();
+         t != fields.end();
          ++t)
     {
         jniEnv->CallBooleanMethod(entitiesSet, add, t->second);
@@ -234,14 +252,14 @@ void Translator::endVisit(const FunctionDefinition &_node) {
          t != parameters.end();
          ++t, i++)
     {
-        jobject type = getType(std::string(t->get()->type()->toString()));
+        jobject type = getType(t->get()->type());
         jniEnv->SetObjectArrayElement(children, i, type);
     }
 
     jobject retType = NULL;
     const std::vector<ASTPointer<VariableDeclaration>> rets = _node.returnParameters();
     if (rets.size() == 1) {
-        std::string retTypeName = rets[0].get()->type()->toString();
+        Type const * retTypeName = rets[0].get()->type();
         retType = getType(retTypeName);
     } else {
         // todo
@@ -404,8 +422,7 @@ bool Translator::visit(const UserDefinedTypeName &_node) {
 }
 
 bool Translator::visit(const VariableDeclaration &_node) {
-    string tn = _node.type()->toString();
-    jobject type = getType(tn);
+    jobject type = getType(_node.type());
     
     jobject loc = makePosition(_node.location());
     
