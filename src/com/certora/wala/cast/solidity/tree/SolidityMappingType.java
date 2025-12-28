@@ -21,7 +21,7 @@ public class SolidityMappingType implements Function {
 
 	@Override
 	public String getName() {
-		return "mapping(" + keyType.getName() + " -> " + valueType.getName();
+		return "mapping(" + keyType.getName() + " => " + valueType.getName();
 	}
 
 	@Override
