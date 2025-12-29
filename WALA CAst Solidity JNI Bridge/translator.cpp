@@ -498,7 +498,11 @@ bool Translator::visit(const VariableDeclaration &_node) {
         
     } else {
         jobject symbol = cast.makeSymbol(name, type, isFinal);
-        ret(record(cast.makeNode(cast.DECL_STMT, cast.makeConstant(symbol), value), _node.location()));
+        if (value != NULL) {
+            ret(record(cast.makeNode(cast.DECL_STMT, cast.makeConstant(symbol), value), _node.location()));
+        } else {
+            ret(record(cast.makeNode(cast.DECL_STMT, cast.makeConstant(symbol)), _node.location()));
+        }
     }
      
     return false;

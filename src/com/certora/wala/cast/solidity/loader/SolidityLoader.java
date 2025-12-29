@@ -2,10 +2,12 @@ package com.certora.wala.cast.solidity.loader;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import com.certora.wala.cast.solidity.jni.SolidityJNIBridge;
+import com.certora.wala.cast.solidity.translator.SolidityAstTranslator;
 import com.certora.wala.cast.solidity.types.SolidityTypes;
 import com.ibm.wala.analysis.typeInference.PrimitiveType;
 import com.ibm.wala.cast.ir.translator.TranslatorToCAst;
@@ -14,8 +16,10 @@ import com.ibm.wala.cast.loader.CAstAbstractModuleLoader;
 import com.ibm.wala.cast.tree.CAst;
 import com.ibm.wala.cast.tree.CAstEntity;
 import com.ibm.wala.cfg.InducedCFG;
+import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IClassLoader;
 import com.ibm.wala.classLoader.IMethod;
+import com.ibm.wala.classLoader.JavaLanguage;
 import com.ibm.wala.classLoader.JavaLanguage.JavaInstructionFactory;
 import com.ibm.wala.classLoader.Language;
 import com.ibm.wala.classLoader.Module;
@@ -45,6 +49,8 @@ import com.ibm.wala.util.collections.Pair;
 
 public class SolidityLoader extends CAstAbstractModuleLoader {
 	SolidityJNIBridge solidityCode = new SolidityJNIBridge();
+	
+	private final IClass root = new CoreClass(SolidityTypes.root.getName(), null, this, null);
 	
 	@Override
 	public void init(List<Module> modules) {
@@ -76,7 +82,7 @@ public class SolidityLoader extends CAstAbstractModuleLoader {
 		return getLanguage().instructionFactory();
 	}
 
-	private static final Language solidity = new Language() {
+	static final Language solidity = new JavaLanguage() {
 
 		@Override
 		public TypeReference[] getArrayInterfaces() {
@@ -86,7 +92,6 @@ public class SolidityLoader extends CAstAbstractModuleLoader {
 
 		@Override
 		public Language getBaseLanguage() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -98,8 +103,7 @@ public class SolidityLoader extends CAstAbstractModuleLoader {
 
 		@Override
 		public Set<Language> getDerivedLanguages() {
-			// TODO Auto-generated method stub
-			return null;
+			return Collections.emptySet();
 		}
 
 		@Override
@@ -117,8 +121,7 @@ public class SolidityLoader extends CAstAbstractModuleLoader {
 
 		@Override
 		public Atom getName() {
-			// TODO Auto-generated method stub
-			return null;
+			return SolidityTypes.solidityLanguage;
 		}
 
 		@Override
@@ -135,20 +138,17 @@ public class SolidityLoader extends CAstAbstractModuleLoader {
 
 		@Override
 		public TypeReference getRootType() {
-			// TODO Auto-generated method stub
-			return null;
+			return SolidityTypes.root;
 		}
 
 		@Override
 		public TypeReference getStringType() {
-			// TODO Auto-generated method stub
-			return null;
+			return SolidityTypes.string;
 		}
 
 		@Override
 		public TypeReference getThrowableType() {
-			// TODO Auto-generated method stub
-			return null;
+			return TypeReference.JavaLangThrowable;
 		}
 
 		@Override
@@ -167,8 +167,7 @@ public class SolidityLoader extends CAstAbstractModuleLoader {
 
 		@Override
 		public boolean isBooleanType(TypeReference t) {
-			// TODO Auto-generated method stub
-			return false;
+			return t == SolidityTypes.bool;
 		}
 
 		@Override
@@ -191,14 +190,12 @@ public class SolidityLoader extends CAstAbstractModuleLoader {
 
 		@Override
 		public boolean isIntType(TypeReference t) {
-			// TODO Auto-generated method stub
-			return false;
+			return t == SolidityTypes.uint8 || t == SolidityTypes.uint256;
 		}
 
 		@Override
 		public boolean isLongType(TypeReference t) {
-			// TODO Auto-generated method stub
-			return false;
+			return t == SolidityTypes.uint256;
 		}
 
 		@Override
@@ -215,8 +212,7 @@ public class SolidityLoader extends CAstAbstractModuleLoader {
 
 		@Override
 		public boolean isStringType(TypeReference t) {
-			// TODO Auto-generated method stub
-			return false;
+			return t == SolidityTypes.string;
 		}
 
 		@Override
@@ -254,8 +250,7 @@ public class SolidityLoader extends CAstAbstractModuleLoader {
 
 		@Override
 		public boolean methodsHaveDeclaredParameterTypes() {
-			// TODO Auto-generated method stub
-			return false;
+			return true;
 		}
 
 		@Override
@@ -266,8 +261,7 @@ public class SolidityLoader extends CAstAbstractModuleLoader {
 
 		@Override
 		public void registerDerivedLanguage(Language l) {
-			// TODO Auto-generated method stub
-			
+			assert false;
 		}
 		
 	};
@@ -287,11 +281,10 @@ public class SolidityLoader extends CAstAbstractModuleLoader {
 		SourceFileModule f = (SourceFileModule)M;
 		return solidityCode.new SolidityFileTranslator(f.getAbsolutePath());
 	}
-
+	
 	@Override
 	protected TranslatorToIR initTranslator(Set<Pair<CAstEntity, ModuleEntry>> topLevelEntities) {
-		// TODO Auto-generated method stub
-		return null;
+		return new SolidityAstTranslator(this);
 	}
 
 	@Override

@@ -6,14 +6,20 @@ import com.ibm.wala.types.TypeReference;
 
 public class SolidityTypes {
 
-	public static ClassLoaderReference solidity = new ClassLoaderReference(Atom.findOrCreateUnicodeAtom("solidity"), null, null);
+	public static Atom solidityLanguage = Atom.findOrCreateUnicodeAtom("Solidity");
 	
-	public static TypeReference uint8 = TypeReference.findOrCreate(solidity, "Puint8;");
+	public static ClassLoaderReference solidity = new ClassLoaderReference(Atom.findOrCreateUnicodeAtom("solidity"), solidityLanguage, null);
+	
+	public static TypeReference root = TypeReference.findOrCreate(solidity, "Lroot");
 
-	public static TypeReference uint256 = TypeReference.findOrCreate(solidity, "Puint256;");
+	public static TypeReference uint8 = TypeReference.findOrCreate(solidity, "Puint8");
 
-	public static TypeReference address = TypeReference.findOrCreate(solidity, "Paddress;");
+	public static TypeReference uint256 = TypeReference.findOrCreate(solidity, "Puint256");
 
-	public static TypeReference string = TypeReference.findOrCreate(solidity, "Pstring;");
+	public static TypeReference address = TypeReference.findOrCreate(solidity, "Paddress");
+
+	public static TypeReference string = TypeReference.findOrCreate(solidity, "Pstring");
+
+	public static TypeReference bool = TypeReference.findOrCreate(solidity, "Pbool");
 
 }

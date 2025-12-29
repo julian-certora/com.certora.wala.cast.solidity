@@ -37,8 +37,7 @@ public abstract class CallableEntity extends AbstractCodeEntity {
 
 	@Override
 	public CAstNode[] getArgumentDefaults() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CAstNode[0];
 	}
 
 	@Override
