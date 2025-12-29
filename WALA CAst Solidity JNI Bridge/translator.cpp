@@ -9,6 +9,13 @@
 
 std::map<std::string, jobject> types;
 
+jobject Translator::getType(std::string tn) {
+    jclass sct = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/SolidityCAstType");
+    jmethodID gt = jniEnv->GetStaticMethodID(sct, "get", "(Ljava/lang/String;)Lcom/ibm/wala/cast/tree/CAstType;");
+    jobject jtn = jniEnv->NewStringUTF(tn.c_str());
+    return jniEnv->CallStaticObjectMethod(sct, gt, jtn);
+}
+
 jobject Translator::getType(Type const* type) {
     if (type->category() == Type::Category::Mapping) {
         MappingType const* mapType = (MappingType const*)type;
@@ -17,13 +24,9 @@ jobject Translator::getType(Type const* type) {
         jclass smt = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/SolidityMappingType");
         jmethodID gt = jniEnv->GetStaticMethodID(smt, "get", "(Lcom/ibm/wala/cast/tree/CAstType;Lcom/ibm/wala/cast/tree/CAstType;)Lcom/ibm/wala/cast/tree/CAstType;");
         return jniEnv->CallStaticObjectMethod(smt, gt, keyType, valueType);
-
     } else {
         std::string tn = type->toString();
-        jclass sct = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/SolidityCAstType");
-        jmethodID gt = jniEnv->GetStaticMethodID(sct, "get", "(Ljava/lang/String;)Lcom/ibm/wala/cast/tree/CAstType;");
-        jobject jtn = jniEnv->NewStringUTF(tn.c_str());
-        return jniEnv->CallStaticObjectMethod(sct, gt, jtn);
+        return getType(tn);
     }
 }
 
@@ -189,11 +192,13 @@ bool Translator::visit(const Block &_node) {
  }
 
 bool Translator::visit(const ElementaryTypeName &_node) {
-    return visitNode(_node);
+    ret(record(cast.makeNode(cast.TYPE_LITERAL_EXPR, cast.makeConstant(_node.typeName().toString().c_str())), _node.location()));
+    return false;
 }
 
 bool Translator::visit(const ElementaryTypeNameExpression &_node) {
-    return visitNode(_node);
+    _node.type().accept(*this);
+    return false;
 }
 
 bool Translator::visit(const EmitStatement &_node) {
@@ -371,7 +376,8 @@ bool Translator::visit(const IfStatement &_node) {
 }
 
 bool Translator::visit(const ImportDirective &_node) {
-    return visitNode(_node);
+    // handled by the ConpilerStack resolving imports
+    return false;
 }
 
 bool Translator::visit(const IndexAccess &_node) {

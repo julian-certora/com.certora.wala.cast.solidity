@@ -145,8 +145,9 @@ private:
         return castNode;
     }
     
+    jobject getType(std::string type);
     jobject getType(Type const* type);
-    
+
 public:
     jobject last() {
         return tree;
