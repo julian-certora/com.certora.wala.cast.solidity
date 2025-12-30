@@ -269,7 +269,7 @@ bool Translator::visit(const ExpressionStatement &_node) {
 bool Translator::visit(const FunctionCall &_node) {
     _node.expression().accept(*this);
     jobject fun = last();
-    
+ 
     int i = 0;
     std::vector<ASTPointer<const Expression>> args = _node.arguments();
     int len = (int)args.size();
@@ -347,9 +347,61 @@ void Translator::endVisit(const FunctionDefinition &_node) {
     //cast.addChildEntity(context->entity(), NULL, funEntity);
 }
 
+jobjectArray Translator::getCAstTypes(const std::vector<ASTPointer<VariableDeclaration>>& ts) {
+    jobjectArray result = jniEnv->NewObjectArray(ts.size(), jniEnv->FindClass("com/ibm/wala/cast/tree/CAstType"), NULL);
+    int i = 0;
+    for (std::vector<ASTPointer<VariableDeclaration>>::const_iterator t=ts.begin();
+         t != ts.end();
+         ++t, i++)
+    {
+        jobject pt = getType(t->get()->type());
+        jniEnv->SetObjectArrayElement(result, i, pt);
+    }
+    
+    return result;
+}
+
+jobject Translator::getSolidityFunctionType(const char *name, jobjectArray params, jobjectArray returns) {
+    jclass sfc = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/SolidityFunctionType");
+    jmethodID sfctor = jniEnv->GetMethodID(sfc, "<init>", "(Ljava/lang/String;[Lcom/ibm/wala/cast/tree/CAstType;[Lcom/ibm/wala/cast/tree/CAstType;)V");
+    return jniEnv->NewObject(sfc, sfctor, jniEnv->NewStringUTF(name), params, returns);
+}
+
+jobject Translator::getSolidityFunctionType(const CallableDeclaration* var) {
+    jobjectArray ps = getCAstTypes(var->parameters());
+    std::cout << ps << std::endl;
+    jobjectArray rs = var->returnParameters().size() > 0? getCAstTypes(var->returnParameters()): NULL;
+    std::cout << rs << std::endl;
+    const char *nm = var->name().c_str();
+    std::cout << nm << std::endl;
+    return getSolidityFunctionType(nm, ps, rs);
+}
+
 bool Translator::visit(const Identifier &_node) {
-    ret(record(cast.makeNode(cast.VAR, cast.makeConstant(_node.name().c_str())), _node.location()));
-    return false;
+    std::cout << _node.annotation().referencedDeclaration->name() << std::endl;
+    std::cout << _node.annotation().referencedDeclaration->type()->toString() << std::endl;
+    std::cout << typeid(_node.annotation().referencedDeclaration->type()).name() << std::endl;
+
+    if (VariableDeclaration const* var = dynamic_cast<VariableDeclaration const*>(_node.annotation().referencedDeclaration)) {
+        if (var->isStateVariable()) {
+            ret(record(cast.makeNode(cast.OBJECT_REF, cast.makeNode(cast.THIS), cast.makeConstant(_node.name().c_str())),   _node.location()));
+            return false;
+        } else if (var->isLocalVariable()) {
+            ret(record(cast.makeNode(cast.VAR, cast.makeConstant(_node.name().c_str())), _node.location()));
+            return false;
+        }
+    } else if (EventDefinition const* var = dynamic_cast<EventDefinition const*>(_node.annotation().referencedDeclaration)) {
+        jobject fun = getSolidityFunctionType(var->name().c_str(), getCAstTypes(var->parameters()), NULL);
+        ret(record(cast.makeConstant(fun), _node.location()));
+        return false;
+    } else if (FunctionDefinition const* var = dynamic_cast<FunctionDefinition const*>(_node.annotation().referencedDeclaration)) {
+        jobject fun = getSolidityFunctionType(var);
+        ret(record(cast.makeConstant(fun), _node.location()));
+        return false;
+    }
+
+    ret(cast.makeNode(cast.EMPTY));
+    return true;
 }
 
 bool Translator::visit(const IdentifierPath &_node) {

@@ -148,6 +148,10 @@ private:
     jobject getType(std::string type);
     jobject getType(Type const* type);
 
+    jobjectArray getCAstTypes(const std::vector<ASTPointer<VariableDeclaration>>&);
+    jobject getSolidityFunctionType(const char *, jobjectArray, jobjectArray);
+    jobject getSolidityFunctionType(const CallableDeclaration*);
+    
 public:
     jobject last() {
         return tree;

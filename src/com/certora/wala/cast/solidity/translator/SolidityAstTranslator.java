@@ -57,7 +57,7 @@ public class SolidityAstTranslator extends AstTranslator {
 	@Override
 	protected boolean defineType(CAstEntity type, WalkContext wc) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
