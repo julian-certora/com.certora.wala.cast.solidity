@@ -147,6 +147,7 @@ jobject translateOpcode(CAstWrapper& cast, Token t) {
         case Token::Sub: return cast.OP_SUB;
         case Token::Mul: return cast.OP_MUL;
         case Token::Div: return cast.OP_DIV;
+        case Token::Mod: return cast.OP_MOD;
         case Token::Equal: return cast.OP_EQ;
         case Token::NotEqual: return cast.OP_NE;
         case Token::LessThan: return cast.OP_LT;
@@ -398,8 +399,11 @@ bool Translator::visit(const Identifier &_node) {
         jobject fun = getSolidityFunctionType(var);
         ret(record(cast.makeConstant(fun), _node.location()));
         return false;
+    } else if (MagicVariableDeclaration const* var = dynamic_cast<MagicVariableDeclaration const*>(_node.annotation().referencedDeclaration)) {
+        ret(record(cast.makeNode(cast.PRIMITIVE, cast.makeConstant(_node.name().c_str())), _node.location()));
+        return false;
     }
-
+    
     ret(cast.makeNode(cast.EMPTY));
     return true;
 }
