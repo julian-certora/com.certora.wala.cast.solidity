@@ -40,7 +40,7 @@ public class SolidityFunctionType implements CAstType {
 		return Collections.emptySet();
 	}
 
-	private String arrayToString(CAstType[] parameters) {
+	private static String arrayToString(CAstType[] parameters) {
 		if (parameters != null && parameters.length > 0) {
 			String s = "(" + parameters[0].getName();
 			if (parameters.length > 1) {
