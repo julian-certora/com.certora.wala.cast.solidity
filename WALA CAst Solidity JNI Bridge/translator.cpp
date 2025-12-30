@@ -271,11 +271,11 @@ bool Translator::visit(const FunctionCall &_node) {
     _node.expression().accept(*this);
     jobject fun = last();
  
-    int i = 0;
+    int i = 1;
     std::vector<ASTPointer<const Expression>> args = _node.arguments();
     int len = (int)args.size();
     jclass cnc = jniEnv->FindClass("com/ibm/wala/cast/tree/CAstNode");
-    jobjectArray children = jniEnv->NewObjectArray(len, cnc, NULL);
+    jobjectArray children = jniEnv->NewObjectArray(len+1, cnc, NULL);
    for (std::vector<ASTPointer<const Expression>>::const_iterator t=args.begin();
          t != args.end();
          ++t, i++)
@@ -362,20 +362,20 @@ jobjectArray Translator::getCAstTypes(const std::vector<ASTPointer<VariableDecla
     return result;
 }
 
-jobject Translator::getSolidityFunctionType(const char *name, jobjectArray params, jobjectArray returns) {
+jobject Translator::getSolidityFunctionType(const char *name, jobjectArray params, jobjectArray returns, bool event) {
     jclass sfc = jniEnv->FindClass("com/certora/wala/cast/solidity/tree/SolidityFunctionType");
-    jmethodID sfctor = jniEnv->GetMethodID(sfc, "<init>", "(Ljava/lang/String;[Lcom/ibm/wala/cast/tree/CAstType;[Lcom/ibm/wala/cast/tree/CAstType;)V");
-    return jniEnv->NewObject(sfc, sfctor, jniEnv->NewStringUTF(name), params, returns);
+    jmethodID sfctor = jniEnv->GetMethodID(sfc, "<init>", "(Ljava/lang/String;[Lcom/ibm/wala/cast/tree/CAstType;[Lcom/ibm/wala/cast/tree/CAstType;Z)V");
+    return jniEnv->NewObject(sfc, sfctor, jniEnv->NewStringUTF(name), params, returns, event);
 }
 
-jobject Translator::getSolidityFunctionType(const CallableDeclaration* var) {
+jobject Translator::getSolidityFunctionType(const CallableDeclaration* var, bool event) {
     jobjectArray ps = getCAstTypes(var->parameters());
     std::cout << ps << std::endl;
     jobjectArray rs = var->returnParameters().size() > 0? getCAstTypes(var->returnParameters()): NULL;
     std::cout << rs << std::endl;
     const char *nm = var->name().c_str();
     std::cout << nm << std::endl;
-    return getSolidityFunctionType(nm, ps, rs);
+    return getSolidityFunctionType(nm, ps, rs, event);
 }
 
 bool Translator::visit(const Identifier &_node) {
@@ -392,11 +392,11 @@ bool Translator::visit(const Identifier &_node) {
             return false;
         }
     } else if (EventDefinition const* var = dynamic_cast<EventDefinition const*>(_node.annotation().referencedDeclaration)) {
-        jobject fun = getSolidityFunctionType(var->name().c_str(), getCAstTypes(var->parameters()), NULL);
+        jobject fun = getSolidityFunctionType(var->name().c_str(), getCAstTypes(var->parameters()), NULL, true);
         ret(record(cast.makeConstant(fun), _node.location()));
         return false;
     } else if (FunctionDefinition const* var = dynamic_cast<FunctionDefinition const*>(_node.annotation().referencedDeclaration)) {
-        jobject fun = getSolidityFunctionType(var);
+        jobject fun = getSolidityFunctionType(var, false);
         ret(record(cast.makeConstant(fun), _node.location()));
         return false;
     } else if (MagicVariableDeclaration const* var = dynamic_cast<MagicVariableDeclaration const*>(_node.annotation().referencedDeclaration)) {

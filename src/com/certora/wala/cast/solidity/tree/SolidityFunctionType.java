@@ -9,11 +9,13 @@ public class SolidityFunctionType implements CAstType {
 	private final String name;
 	private final CAstType[] parameters;
 	private final CAstType[] returns;
+	private final boolean event;
 
-	public SolidityFunctionType(String name, CAstType[] parameters, CAstType[] returns) {
+	public SolidityFunctionType(String name, CAstType[] parameters, CAstType[] returns, boolean event) {
 		this.name = name;
 		this.parameters = parameters;
 		this.returns = returns;
+		this.event = event;
 	}
 
 	@Override
@@ -27,6 +29,10 @@ public class SolidityFunctionType implements CAstType {
 
 	public CAstType[] returns() {
 		return returns;
+	}
+	
+	public boolean isEvent() {
+		return event;
 	}
 	
 	@Override
@@ -51,7 +57,7 @@ public class SolidityFunctionType implements CAstType {
 	
 	@Override
 	public String toString() {
-		String s = name + arrayToString(parameters);
+		String s = (isEvent()? "event ": "function ") + name + arrayToString(parameters);
 		if (returns != null && returns.length > 0) {
 			s += " --> " + arrayToString(returns);
 		}

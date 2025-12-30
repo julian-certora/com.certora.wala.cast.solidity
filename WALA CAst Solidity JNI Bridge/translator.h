@@ -149,8 +149,8 @@ private:
     jobject getType(Type const* type);
 
     jobjectArray getCAstTypes(const std::vector<ASTPointer<VariableDeclaration>>&);
-    jobject getSolidityFunctionType(const char *, jobjectArray, jobjectArray);
-    jobject getSolidityFunctionType(const CallableDeclaration*);
+    jobject getSolidityFunctionType(const char *, jobjectArray, jobjectArray, bool);
+    jobject getSolidityFunctionType(const CallableDeclaration*, bool);
     
 public:
     jobject last() {
